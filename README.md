@@ -27,13 +27,13 @@ All endpoints require an `authentication token` provided by your mobile tracking
 
 `GET /member/{firstname}/{lastname}` - Gets a family member by first and last name.
 
-`GET /member/location` - Gets current location of a member.
+`GET /member/{firstname}/{lastname}/location` - Gets current location of a member.
 
-`POST /member/location` - Checks into a new location.
+`POST /member/{firstname}/{lastname}/{firstname}/{lastname}/location` - Checks into a new location.
 
-`PATCH /member/location` - Update current location statistics.
+`PATCH /member/{firstname}/{lastname}/location` - Update current location statistics.
 
-`PATCH /member/type` - Updates a member type. Valid types include `parent`,`user`, and `admin`.
+`PATCH /member/{firstname}/{lastname}/type` - Updates a member type. Valid types include `parent`,`user`, and `admin`.
 
 `DELETE /family/{family}` - Removes a family.
 
