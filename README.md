@@ -35,6 +35,6 @@ All endpoints require an `authentication token` provided by your mobile tracking
 
 `PATCH /member/type` - Updates a member type. Valid types include `parent`,`user`, and `admin`.
 
-`DELETE /family/{family}` - Removes a family member.
+`DELETE /family/{family}` - Removes a family.
 
 `DELETE /family/{family}/member/{firstname}/{lastname}` - Removes family member from a family.
