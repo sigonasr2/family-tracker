@@ -29,7 +29,7 @@ All endpoints require an `authentication token` provided by your mobile tracking
 
 `GET /member/{firstname}/{lastname}/location` - Gets current location of a member.
 
-`POST /member/{firstname}/{lastname}/{firstname}/{lastname}/location` - Checks into a new location.
+`POST /member/{firstname}/{lastname}/location` - Checks into a new location.
 
 `PATCH /member/{firstname}/{lastname}/location` - Update current location statistics.
 
