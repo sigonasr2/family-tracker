@@ -71,8 +71,13 @@ public class Endpoints {
 	}
 	
 	@GetMapping("/family/{id}")
-	public Optional<Family> _2(@PathVariable Long id) {
-		return families.findById(id);
+	public FamilyContainer _2(@PathVariable Long id) {
+		if (families.existsById(id)) {
+			Family f = families.findById(id).get();
+			return new FamilyContainer(f.getName(),families,relationships,members);
+		} else {
+			return null;
+		}
 	}
 	
 	@PostMapping("/family")
@@ -173,20 +178,24 @@ public class Endpoints {
 			FamilyMember m = members.findById(fr.getMemberId()).get();
 			boolean isParent = relationships.findByMemberIdAndRelationshipIn(Long.parseLong(body.get("member")),Arrays.asList("Father","Mother","Parent")).size()>0;
 			if (loc.size()>0) {
-				KnownLocation ll = loc.get(0);
-				if (!ll.isSafe()) {
-					notifications.save(new Notification("You are arriving at "+ll.getName()+", which is considered an unsafe location! Be careful!",m.getId(),1,new Date()));
-				}
-				if (!isParent) {
-					//Send a notification to parents.
-					List<FamilyRelationship> parents = relationships.findByFamilyIdAndRelationshipIn(fr.getFamilyId(),Arrays.asList("Father","Mother","Parent"));
-					for (FamilyRelationship f : parents) {
-						if (!ll.isSafe()) {
-							notifications.save(new Notification(m.getFirstName()+" "+m.getLastName()+" has arrived at "+ll.getName()+", this is an unsafe location!",f.getMemberId(),1,new Date()));
-						} else {
-							notifications.save(new Notification(m.getFirstName()+" "+m.getLastName()+" has arrived at "+ll.getName()+".",f.getMemberId(),0,new Date()));
+				if (m.getLastLocationId()==null||m.getLastLocationId()!=loc.get(0).getId()) {
+					KnownLocation ll = loc.get(0);
+					if (!ll.isSafe()) {
+						notifications.save(new Notification("You are arriving at "+ll.getName()+", which is considered an unsafe location! Be careful!",m.getId(),1,new Date()));
+					}
+					if (!isParent) {
+						//Send a notification to parents.
+						List<FamilyRelationship> parents = relationships.findByFamilyIdAndRelationshipIn(fr.getFamilyId(),Arrays.asList("Father","Mother","Parent"));
+						for (FamilyRelationship f : parents) {
+							if (!ll.isSafe()) {
+								notifications.save(new Notification(m.getFirstName()+" "+m.getLastName()+" has arrived at "+ll.getName()+", this is an unsafe location!",f.getMemberId(),1,new Date()));
+							} else {
+								notifications.save(new Notification(m.getFirstName()+" "+m.getLastName()+" has arrived at "+ll.getName()+".",f.getMemberId(),0,new Date()));
+							}
 						}
 					}
+					m.setLastLocationId(loc.get(0).getId());
+					members.save(m);
 				}
 			}
 			

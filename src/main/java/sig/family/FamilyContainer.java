@@ -21,17 +21,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class FamilyContainer extends Family{
 	
 	List<FamilyMember> members = new ArrayList<>();
+	Long id = -1l;
 	
 	FamilyContainer(String name
 			,FamilyRepository families
 			,FamilyRelationshipRepository relationships
 			,FamilyMemberRepository members) {
 		super(name);
-		List<FamilyRelationship> relations = relationships.findByFamilyId(families.findByName(name).get(0).getId());
+		id = families.findByName(name).get(0).getId();
+		List<FamilyRelationship> relations = relationships.findByFamilyId(id);
 		for (FamilyRelationship r : relations) {
 			this.members.add(members.findById(r.getMemberId()).get());
 		}
-		System.out.println("Called: "+this.members);
 	}
 
 	public List<FamilyMember> getMembers() {
@@ -40,5 +41,13 @@ public class FamilyContainer extends Family{
 
 	public void setMembers(List<FamilyMember> members) {
 		this.members = members;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 }

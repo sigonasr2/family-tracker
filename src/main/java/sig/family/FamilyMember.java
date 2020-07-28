@@ -23,6 +23,8 @@ public class FamilyMember {
 	
 	Long mobileDeviceId;
 	
+	Long lastLocationId;
+	
 	FamilyMember(){}
 	
 	public FamilyMember(String firstName, String lastName, Long mobileDeviceId) {
@@ -54,5 +56,13 @@ public class FamilyMember {
 	}
 	public void setMobileDeviceId(Long mobileDeviceId) {
 		this.mobileDeviceId = mobileDeviceId;
+	}
+
+	public Long getLastLocationId() {
+		return lastLocationId;
+	}
+
+	public void setLastLocationId(Long lastLocationId) {
+		this.lastLocationId = lastLocationId;
 	}
 }
