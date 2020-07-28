@@ -19,24 +19,41 @@ An application that allows a family to track family members via live tracking an
 - As a user, I should be warned if a location I am going to is suspicious or susceptible to danger.
 
 ## Data Endpoints
-All endpoints require an `authentication token` provided by your mobile tracking device upon registration. They must be passed in as a parameter for all endpoints as `?auth=XXXXXXX`
+`GET /family` - Gets all family profiles. Each family profile contains a `members` object. Sample output:
+```[{"id":1,"name":"Test","members":[]},{"id":2,"name":"Sigona","members":[{"id":1,"firstName":"Joshua","lastName":"Sigona","mobileDeviceId":43891005},{"id":2,"firstName":"Michelle","lastName":"Sigona","mobileDeviceId":16829175},{"id":3,"firstName":"Joseph","lastName":"Sigona","mobileDeviceId":65881096},{"id":4,"firstName":"Jonathan","lastName":"Sigona","mobileDeviceId":99971653},{"id":5,"firstName":"Robert","lastName":"Sigona","mobileDeviceId":987198324598},{"id":6,"firstName":"Son Yong","lastName":"Sigona","mobileDeviceId":87657155}]}]```
 
-`GET /family` - Gets all family profiles. Each family profile contains a `member` object. 
+`POST /family` - Adds a new family. Required: ```@RequestBody: 
+name - Name of new family.```
 
-`GET /family/{name}` - Get a family by name.
+`POST /member/create` - Adds a new family. Required: ```	 * @RequestBody requires:
+	 * 	firstName - First Name of family member.
+	 * 	lastName - Last Name of family member.
+	 * 	mobileId - ID of mobile device.```
+   
+`POST /relationship/{familyid}/{memberid}/{relationship}` - Establish a new relationship between a member and its family. Valid relationships are: `Parent/Mother/Father/Brother/Sister`
 
-`GET /member/{firstname}/{lastname}` - Gets a family member by first and last name.
+`DELETE /relationship/{familyid}/{memberid}` - Removes a created relationship from a member.
 
-`GET /member/{firstname}/{lastname}/location` - Gets current location of a member.
+`DELETE /member/{id}` - Deletes a member by id. Removes all established relationships of this member as well.
 
-`POST /member/{firstname}/{lastname}` - Register a new member with a mobile device.
+`POST /location` - Records a new location a member is currently at. Will automatically notify the appropriate users about dangerous locations as well as notify parents of their childrens' whereabouts. Required: ```@RequestBody:
+	 * 	member - The member posting this location.
+	 *  x - The X coordinate of the location (latitude).
+	 *  y - The Y coordination of the location (longitude).```
+   
+`POST /knownlocation` - Records a new known location. Required: ```@RequestBody 
+	 * 	name - The name of the location.
+	 *  x - The X coordinate of the location (longitude).
+	 *  y - The Y coordination of the location (latitude).
+	 *  safe - True if safe, false if unsafe location.```
+   
+`DELETE /knownlocation/{id}` - Deletes a known location by id.
 
-`POST /member/{firstname}/{lastname}/location` - Checks into a new location.
+`GET /notification/{memberid}` - Gets the notifications a user has by member id.
 
-`PATCH /member/{firstname}/{lastname}/location` - Update current location statistics.
-
-`PATCH /member/{firstname}/{lastname}/type` - Updates a member type. Valid types include `parent`,`user`, and `admin`.
-
-`DELETE /family/{family}` - Removes a family.
-
-`DELETE /family/{family}/member/{firstname}/{lastname}` - Removes family member from a family.
+`POST /notification` - Posts a new notification to a user from another user. Required: ```@RequestBody
+	 * 	fromMember - The ID of the member sending the notification.
+	 *  toMember - The ID of the member receiving the notification.
+	 *	message - The message.```
+   
+`DELETE /notification/{notificationid}` - Deletes a notification by id.
