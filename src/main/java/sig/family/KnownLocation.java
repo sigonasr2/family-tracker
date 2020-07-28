@@ -1,4 +1,4 @@
-package com.example.demo;
+package sig.family;
 
 import java.util.Date;
 
@@ -15,34 +15,58 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Entity
-@Table(name="data")
+@Table(name="knownlocations")
 @RequestMapping
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Data {
+public class KnownLocation {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Long id;
-	
+	double x,y;
 	String name;
-	@Column(columnDefinition="date")
-	@JsonFormat(pattern="MM-dd-yyyy")
-	Date submittedOn;
+	boolean isSafe;
+	
+	public KnownLocation() {}
+	
+	public KnownLocation(double x, double y, String name, boolean isSafe) {
+		this.x = x;
+		this.y = y;
+		this.name=name;
+		this.isSafe=isSafe;
+	}
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
+	public double getX() {
+		return x;
+	}
+	public void setX(double x) {
+		this.x = x;
+	}
+	public double getY() {
+		return y;
+	}
+	public void setY(double y) {
+		this.y = y;
+	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getSubmittedOn() {
-		return submittedOn;
+
+	public boolean isSafe() {
+		return isSafe;
 	}
-	public void setSubmittedOn(Date submittedOn) {
-		this.submittedOn = submittedOn;
+
+	public void setSafe(boolean isSafe) {
+		this.isSafe = isSafe;
 	}
+	
 }
