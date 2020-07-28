@@ -23,6 +23,8 @@ public class FamilyMember {
 	
 	Long mobileDeviceId;
 	
+	FamilyMember(){}
+	
 	public FamilyMember(String firstName, String lastName, Long mobileDeviceId) {
 		this.firstName = firstName;
 		this.lastName = lastName;

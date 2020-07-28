@@ -25,6 +25,8 @@ public class Family {
 	
 	String name;
 	
+	Family(){}
+	
 	Family(String name) {
 		this.name=name;
 	}

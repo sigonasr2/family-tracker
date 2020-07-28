@@ -22,15 +22,18 @@ public class KnownLocation {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Long id;
-	double x,y;
+	@Column(name="x")
+	double longitude;
+	@Column(name="y")
+	double latitude;
 	String name;
 	boolean isSafe;
 	
 	public KnownLocation() {}
 	
 	public KnownLocation(double x, double y, String name, boolean isSafe) {
-		this.x = x;
-		this.y = y;
+		this.longitude = x;
+		this.latitude = y;
 		this.name=name;
 		this.isSafe=isSafe;
 	}
@@ -41,16 +44,16 @@ public class KnownLocation {
 		this.id = id;
 	}
 	public double getX() {
-		return x;
+		return longitude;
 	}
 	public void setX(double x) {
-		this.x = x;
+		this.longitude = x;
 	}
 	public double getY() {
-		return y;
+		return latitude;
 	}
 	public void setY(double y) {
-		this.y = y;
+		this.latitude = y;
 	}
 
 	public String getName() {
