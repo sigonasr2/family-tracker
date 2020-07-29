@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FamilyContainer extends Family{
 	
-	List<FamilyMember> members = new ArrayList<>();
+	List<FamilyMemberContainer> members = new ArrayList<>();
 	Long id = -1l;
 	
 	FamilyContainer(String name
@@ -31,15 +31,16 @@ public class FamilyContainer extends Family{
 		id = families.findByName(name).get(0).getId();
 		List<FamilyRelationship> relations = relationships.findByFamilyId(id);
 		for (FamilyRelationship r : relations) {
-			this.members.add(members.findById(r.getMemberId()).get());
+			FamilyMember m = members.findById(r.getMemberId()).get();
+			this.members.add(new FamilyMemberContainer(m,relationships));
 		}
 	}
 
-	public List<FamilyMember> getMembers() {
+	public List<FamilyMemberContainer> getMembers() {
 		return members;
 	}
 
-	public void setMembers(List<FamilyMember> members) {
+	public void setMembers(List<FamilyMemberContainer> members) {
 		this.members = members;
 	}
 

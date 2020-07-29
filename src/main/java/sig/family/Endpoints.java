@@ -158,6 +158,56 @@ public class Endpoints {
 		}
 	}
 	
+	@PatchMapping("/member/{id}")
+	/**
+	 * @RequestBody can have:
+	 * 	firstName - (Optional)Modified first name.
+	 *  lastName - (Optional)Modified last name.
+	 *  mobileId - (Optional)Modified mobile Id.
+	 * @return
+	 */
+	public FamilyMember _11(
+			@PathVariable Long id,
+			@RequestBody HashMap<String,String> body) {
+		if (members.existsById(id)) {
+			FamilyMember m = members.findById(id).get();
+			if (body.containsKey("firstName")) {
+				m.setFirstName(body.get("firstName"));
+			}
+			if (body.containsKey("lastName")) {
+				m.setLastName(body.get("lastName"));
+			}
+			if (body.containsKey("mobileId")) {
+				m.setMobileDeviceId(Long.parseLong(body.get("mobileId")));
+			}
+			members.save(m);
+			return m;
+		} else {
+			return null;
+		}
+	}
+	
+	@PatchMapping("/family/{id}")
+	/**
+	 * @RequestBody can have:
+	 * 	name - (Optional)New family name.
+	 * @return
+	 */
+	public Family _12(
+			@PathVariable Long id,
+			@RequestBody HashMap<String,String> body) {
+		if (families.existsById(id)) {
+			Family m = families.findById(id).get();
+			if (body.containsKey("name")) {
+				m.setName(body.get("name"));
+			}
+			families.save(m);
+			return m;
+		} else {
+			return null;
+		}
+	}
+	
 	@PostMapping("/location")
 	/**
 	 * @RequestBody requires:
