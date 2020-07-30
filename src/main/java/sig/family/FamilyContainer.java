@@ -26,13 +26,14 @@ public class FamilyContainer extends Family{
 	FamilyContainer(String name
 			,FamilyRepository families
 			,FamilyRelationshipRepository relationships
-			,FamilyMemberRepository members) {
+			,FamilyMemberRepository members
+			,LocationRepository locations) {
 		super(name);
 		id = families.findByName(name).get(0).getId();
 		List<FamilyRelationship> relations = relationships.findByFamilyId(id);
 		for (FamilyRelationship r : relations) {
 			FamilyMember m = members.findById(r.getMemberId()).get();
-			this.members.add(new FamilyMemberContainer(m,relationships));
+			this.members.add(new FamilyMemberContainer(m,relationships,locations));
 		}
 	}
 

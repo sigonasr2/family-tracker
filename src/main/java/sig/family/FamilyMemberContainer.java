@@ -1,5 +1,7 @@
 package sig.family;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,6 +11,8 @@ import javax.persistence.Table;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import sig.family.FamilyApp.Message;
 
 @RequestMapping
 public class FamilyMemberContainer extends FamilyMember{
@@ -22,15 +26,39 @@ public class FamilyMemberContainer extends FamilyMember{
 	
 	String relationship;
 	
+	double x,y;
+	
 	FamilyMemberContainer(){}
 	
 	public FamilyMemberContainer(FamilyMember m,
-			FamilyRelationshipRepository relationships) {
+			FamilyRelationshipRepository relationships,
+			LocationRepository locations) {
 		this.firstName = m.firstName;
 		this.lastName = m.lastName;
 		this.mobileDeviceId = m.mobileDeviceId;
 		this.id=m.id;
 		relationship = relationships.findByMemberId(m.getId()).get(0).getRelationship();
+		List<Location> locs = locations.findTopByMemberIdOrderByIdDesc(m.getId());
+		if (locs.size()>0) {
+			Location l = locs.get(0);
+			this.x=l.getX();
+			this.y=l.getY();
+		} else {
+			//Use their assigned location.
+			if (this.getLastLocationId()==null) {
+				this.x=-110.253;
+				this.y=31.554;
+				Message mm = new Message();
+				mm.member=m.getId();
+				mm.setX(this.x);
+				mm.setY(this.y);
+				FamilyApp.postMessage(mm);
+			} else {
+				Location l = locations.findById(this.getLastLocationId()).get();
+				this.x=l.getX();
+				this.y=l.getY();
+			}
+		}
 	}
 	
 	public Long getId() {
@@ -72,5 +100,21 @@ public class FamilyMemberContainer extends FamilyMember{
 
 	public void setRelationship(String relationship) {
 		this.relationship = relationship;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
 	}
 }

@@ -1,5 +1,8 @@
 package sig.family;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,12 +42,12 @@ import javax.websocket.server.PathParam;
 @RestController
 public class Endpoints {
 	
-	FamilyRepository families;
-	FamilyMemberRepository members;
-	FamilyRelationshipRepository relationships;
-	LocationRepository locations;
-	KnownLocationRepository knownlocations;
-	NotificationRepository notifications;
+	public static FamilyRepository families;
+	public static FamilyMemberRepository members;
+	public static FamilyRelationshipRepository relationships;
+	public static LocationRepository locations;
+	public static KnownLocationRepository knownlocations;
+	public static NotificationRepository notifications;
 	RestTemplate connection = new RestTemplate();
 	
 	public Endpoints(FamilyRepository families,
@@ -53,19 +56,19 @@ public class Endpoints {
 			LocationRepository locations,
 			KnownLocationRepository knownlocations,
 			NotificationRepository notifications) {
-		this.families=families;
-		this.members=members;
-		this.relationships=relationships;
-		this.locations=locations;
-		this.knownlocations=knownlocations;
-		this.notifications=notifications;
+		Endpoints.families=families;
+		Endpoints.members=members;
+		Endpoints.relationships=relationships;
+		Endpoints.locations=locations;
+		Endpoints.knownlocations=knownlocations;
+		Endpoints.notifications=notifications;
 	}
 	
 	@GetMapping("/family")
 	public List<FamilyContainer> _1() {
 		List<FamilyContainer> list = new ArrayList<>();
 		for (Family f : families.findAll()) {
-			list.add(new FamilyContainer(f.getName(),families,relationships,members));
+			list.add(new FamilyContainer(f.getName(),families,relationships,members,locations));
 		}
 		return list;
 	}
@@ -74,7 +77,7 @@ public class Endpoints {
 	public FamilyContainer _2(@PathVariable Long id) {
 		if (families.existsById(id)) {
 			Family f = families.findById(id).get();
-			return new FamilyContainer(f.getName(),families,relationships,members);
+			return new FamilyContainer(f.getName(),families,relationships,members,locations);
 		} else {
 			return null;
 		}
@@ -256,6 +259,16 @@ public class Endpoints {
 		}
 	}
 	
+	@GetMapping("/knownlocation")
+	public Iterable<KnownLocation> _13() {
+		return knownlocations.findAll();
+	}
+	
+	@GetMapping("/location/{memberid}")
+	public Location _13(@PathVariable Long memberid) {
+		return locations.findTopByMemberIdOrderByIdDesc(memberid).get(0);
+	}
+	
 	@PostMapping("/knownlocation")
 	/**
 	 * @RequestBody requires:
@@ -287,7 +300,10 @@ public class Endpoints {
 	
 	@GetMapping("/notification/{id}")
 	public List<Notification> _10(@PathVariable Long id) {
-		return notifications.findByMemberId(id);
+		//return notifications.findByMemberIdOrderByDateDesc(id);
+		//Page<Example> findByValidIsTrue(Pageable pageable);
+		//List<Example> result = repository.findByValidIsTrue(new PageRequest(0, N))
+		return notifications.findByMemberIdOrderByDateDesc(id,PageRequest.of(0,30,Sort.by(Direction.DESC,"date")));
 	}
 	
 	@PostMapping("/notification")

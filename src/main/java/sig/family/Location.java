@@ -1,5 +1,6 @@
 package sig.family;
 
+import java.lang.reflect.Field;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -69,5 +70,23 @@ public class Location {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.getClass().getName()+"(");
+		boolean first=true;
+		for (Field f : this.getClass().getDeclaredFields()) {
+			if (!first) {
+				sb.append(",");
+			}
+			try {
+				sb.append(f.getName()+"="+f.get(this));
+				first=false;
+			} catch (IllegalArgumentException|IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		sb.append(")");
+		return sb.toString();
+	}
 }

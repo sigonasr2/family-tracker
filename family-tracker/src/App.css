@@ -22,6 +22,51 @@
   }
 }
 
+.fadein {
+  animation-name: fadein;
+  animation-duration: 4s;
+}
+.badfadein {
+  animation-name: badfadein;
+  animation-duration: 4s;
+  background-color:#faa;
+}
+.badchildfadein {
+  animation-name: badchildfadein;
+  animation-duration: 4s;
+  background-color:#fae;
+}
+
+.tinytime{
+	font-size:12px;
+	position:absolute;
+	bottom:4px;
+	right:7px;
+	/*z-index:-10000;*/
+	color:#666;
+	font-style:italic;
+	/*background-color:rgba(240,240,255,0.8);*/
+}
+
+@keyframes fadein {
+  0%   {opacity:0;
+  background-color:#6ef;}
+  100%   {opacity:1;
+  background-color:#fff;}
+}
+@keyframes badfadein {
+  0%   {opacity:0;
+  background-color:#f00;}
+  100%   {opacity:1;
+  background-color:#faa;}
+}
+@keyframes badchildfadein {
+  0%   {opacity:0;
+  background-color:#f0a;}
+  100%   {opacity:1;
+  background-color:#fae;}
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
