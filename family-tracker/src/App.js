@@ -41,16 +41,30 @@ setInterval(()=>{
 				if (loc.safe) {
 					ctx.fillStyle="#6a6"
 				} else {
-					ctx.fillStyle="#a66"
+					ctx.fillStyle="#d66"
 				}
 				ctx.arc((loc.x-mapX)/mapXScale,(loc.y-mapY)/mapYScale,10,0,2*Math.PI)
 				ctx.fill();
 			}
 			for (var m of members) {
 				ctx.beginPath();
-				ctx.fillStyle="#22f"
+				switch (m.relationship) {
+					case "Father":{
+						ctx.fillStyle="#22f"
+					}break;
+					case "Mother":{
+						ctx.fillStyle="#f26"
+					}break;
+					case "Brother":{
+						ctx.fillStyle="#4df"
+					}break;
+					case "Sister":{
+						ctx.fillStyle="#f4f"
+					}break;
+				}
 				ctx.arc((m.x-mapX)/mapXScale,(m.y-mapY)/mapYScale,5,0,2*Math.PI);
 				ctx.fill();
+				ctx.stroke();
 			}
 			ctx.font = "22px Verdana";
 			for (var loc of locations) {
@@ -193,6 +207,7 @@ function Message(p) {
 	);
 }
 
+
 function Member(p) {
 	
 	const [familyId,setFamilyId] = useState(0)
@@ -201,6 +216,11 @@ function Member(p) {
 	const [relationship,setRelationship] = useState("")
 	const [mobileDevice,setMobileDevice] = useState("")
 	const [disabled,setDisabled] = useState(false)
+	
+	const options = [{display:"Father",value:"Father"},
+	{display:"Mother",value:"Mother"},
+	{display:"Son",value:"Brother"},
+	{display:"Daughter",value:"Sister"},]
 	
 	useEffect(()=>{
 		p.setActive("/members")
@@ -227,7 +247,9 @@ function Member(p) {
 			<div className="row">
 				<div className="col-sm-12 col-lg-8">
 					<label htmlFor="name">Add Member:</label>
-					<br/><input type="text" disabled={disabled} onChange={(e)=>{setFirstName(e.target.value);}} value={firstName} id="firstName" style={{width:"30%"}}/><input type="text" disabled={disabled} onChange={(e)=>{setLastName(e.target.value);}} value={lastName} id="lastName" style={{width:"30%"}}/><input type="text" disabled={disabled} onChange={(e)=>{setMobileDevice(e.target.value);}} value={mobileDevice} id="mobileDevice" style={{width:"30%"}}/><input type="text" disabled={disabled} onChange={(e)=>{setRelationship(e.target.value);}} value={relationship} id="relationship" style={{width:"30%"}}/><button disabled={disabled} style={{width:"10%"}} onClick={()=>{
+					<br/><div className="form-group"><label for="firstName">First Name</label><input type="text" className="form-control form-control-sm" name="firstName" disabled={disabled} onChange={(e)=>{setFirstName(e.target.value);}} value={firstName} id="firstName"/></div><div className="form-group"><label for="lastName">Last Name</label><input type="text" className="form-control form-control-sm" name="lastName" disabled={disabled} onChange={(e)=>{setLastName(e.target.value);}} value={lastName} id="lastName"/></div><div className="form-group"><label for="mobileDevice">Mobile Device</label><input type="text" name="mobileDevice" className="form-control form-control-sm" disabled={disabled} onChange={(e)=>{setMobileDevice(e.target.value);}} value={mobileDevice} id="mobileDevice"/></div><div className="form-group"><label for="relationship">Relationship</label><select className="form-control form-control-sm" name="relationship" disabled={disabled} onChange={(e)=>{setRelationship(e.target.value);}} id="relationship" value={relationship}>
+						{options.map((option)=><option value={option.value} key={option.value}>{option.display}</option>)}
+					</select></div><button disabled={disabled} style={{width:"10%"}} onClick={()=>{
 						setDisabled(true)
 						axios.post("http://localhost:8080/member/create",{firstName:firstName,lastName:lastName,mobileId:mobileDevice})
 						.then((data)=>{

@@ -22,7 +22,7 @@ public class FamilyApp {
 	
 	static HashMap<Long,GPSUser> map = new HashMap<>();
 	static RestTemplate connection = new RestTemplate();
-	public final static int WAITMULT=3;
+	public final static int WAITMULT=2;
 	
 	public static Location postMessage(Message message) {
 	    // Construct a URI from a template
@@ -109,6 +109,7 @@ public class FamilyApp {
 							} else {
 								g.targetX=l.getX();
 								g.targetY=l.getY();
+								System.out.println("New target for "+g.id+" is now "+l.getName());
 								//System.out.println(connection.postForObject("http://localhost:8080", String.class, "6ba5969a",q));
 								break;
 							}
@@ -124,7 +125,7 @@ public class FamilyApp {
 					if (u.waitTime>0) {
 						u.waitTime--;
 					} else {
-						if (u.targetX!=u.x || u.targetY!=u.y) {
+						if (Math.abs(u.targetX-u.x)>0.001 || Math.abs(u.targetY-u.y)>0.001) {
 							switch ((int)(Math.random()*6)) {
 								case 0:{
 									//Sometimes go a random direction.
@@ -164,6 +165,7 @@ public class FamilyApp {
 								} else {
 									u.targetX=l.getX();
 									u.targetY=l.getY();
+									System.out.println("New target for "+u.id+" is now "+l.getName());
 									//System.out.println(connection.postForObject("http://localhost:8080", String.class, "6ba5969a",q));
 									break;
 								}
