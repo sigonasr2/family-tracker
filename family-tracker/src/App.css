@@ -1,3 +1,14 @@
+body{
+	font-family:Roboto
+}
+
+.navibar{
+	position: -webkit-sticky; /* this is for all Safari (Desktop & iOS), not for Chrome*/
+    position: sticky;
+    top: 0;
+    z-index: 100000;
+}
+
 .mouseover:hover{
 	background-color:#eee;
 }

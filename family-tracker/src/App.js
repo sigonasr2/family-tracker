@@ -1,6 +1,17 @@
 import React, {useState,useEffect} from 'react';
 import logo from './logo.svg';
 import './App.css';
+import AppBar from '@material-ui/core/AppBar';
+import MuiAppBar from '@material-ui/core/AppBar';
+import { ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { Container } from '@material-ui/core';
+import MuiBottomNavigation from '@material-ui/core/BottomNavigation';
+import MuiBottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import MuiGroupAddTwoToneIcon from '@material-ui/icons/GroupAddTwoTone';
+import FavoriteTwoToneIcon from '@material-ui/icons/FavoriteTwoTone';
+import AnnouncementTwoToneIcon from '@material-ui/icons/AnnouncementTwoTone';
+import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone';
 import {
   BrowserRouter as Router,
   Switch,
@@ -245,9 +256,9 @@ function Member(p) {
 				</div>
 			</div>
 			<div className="row">
-				<div className="col-sm-12 col-lg-8">
+				<div className="col-12">
 					<label htmlFor="name">Add Member:</label>
-					<br/><div className="form-group"><label for="firstName">First Name</label><input type="text" className="form-control form-control-sm" name="firstName" disabled={disabled} onChange={(e)=>{setFirstName(e.target.value);}} value={firstName} id="firstName"/></div><div className="form-group"><label for="lastName">Last Name</label><input type="text" className="form-control form-control-sm" name="lastName" disabled={disabled} onChange={(e)=>{setLastName(e.target.value);}} value={lastName} id="lastName"/></div><div className="form-group"><label for="mobileDevice">Mobile Device</label><input type="text" name="mobileDevice" className="form-control form-control-sm" disabled={disabled} onChange={(e)=>{setMobileDevice(e.target.value);}} value={mobileDevice} id="mobileDevice"/></div><div className="form-group"><label for="relationship">Relationship</label><select className="form-control form-control-sm" name="relationship" disabled={disabled} onChange={(e)=>{setRelationship(e.target.value);}} id="relationship" value={relationship}>
+					<br/><div className="form-group"><label htmlFor="firstName">First Name</label><input type="text" className="form-control form-control-sm" name="firstName" disabled={disabled} onChange={(e)=>{setFirstName(e.target.value);}} value={firstName} id="firstName"/></div><div className="form-group"><label htmlFor="lastName">Last Name</label><input type="text" className="form-control form-control-sm" name="lastName" disabled={disabled} onChange={(e)=>{setLastName(e.target.value);}} value={lastName} id="lastName"/></div><div className="form-group"><label htmlFor="mobileDevice">Mobile Device</label><input type="text" name="mobileDevice" className="form-control form-control-sm" disabled={disabled} onChange={(e)=>{setMobileDevice(e.target.value);}} value={mobileDevice} id="mobileDevice"/></div><div className="form-group"><label htmlFor="relationship">Relationship</label><select className="form-control form-control-sm" name="relationship" disabled={disabled} onChange={(e)=>{setRelationship(e.target.value);}} id="relationship" value={relationship}>
 						{options.map((option)=><option value={option.value} key={option.value}>{option.display}</option>)}
 					</select></div><button disabled={disabled} style={{width:"10%"}} onClick={()=>{
 						setDisabled(true)
@@ -330,10 +341,10 @@ function Fam(p) {
 			<div className="col-1 border-left border-top border-bottom">
 				{p.family.id}
 			</div>
-			<div className="col-1 border-top border-bottom">
+			<div className="col-2 border-top border-bottom">
 				<Editable update={p.update} setUpdate={p.setUpdate} endpoint={"http://localhost:8080/family/"+p.family.id} field="name" value={p.family.name}/>
 			</div>
-			<div className="col-sm-12 col-lg-6 mr-3 border-left border-top border-bottom border-right">
+			<div className="col-9 border-left border-top border-bottom border-right">
 				{p.family.members.map((member)=><Mem key={member.id} member={member} update={p.update} setUpdate={p.setUpdate}/>)}
 			</div>
 		</div>
@@ -353,7 +364,7 @@ function Family(p) {
 		{p.family.map((family)=><Fam key={family.id} family={family} update={p.update} setUpdate={p.setUpdate}/>)}
 		<br/>
 		<div className="row">
-			<div className="col-sm-12 col-lg-8">
+			<div className="col-12">
 				<label htmlFor="name">Add Family Name:</label>
 				<br/><input type="text" onChange={(e)=>{setFamily(e.target.value);}} value={family} id="name" style={{width:"90%"}}/><button style={{width:"10%"}} onClick={()=>{
 					axios.post("http://localhost:8080/family",{name:family})
@@ -378,11 +389,18 @@ function L(p) {
 	)
 }
 
+const darkTheme = createMuiTheme({
+    palette: {
+      type: 'dark',
+    },
+});
+
 function App() {
 	const [pageView,setPageView] = useState(null);
 	const [active,setActive] = useState("/");
 	const [family,setFamily] = useState([]);
 	const [update,setUpdate] = useState(false);
+	const [value,setValue] = useState("Family")
 	
 	useEffect(()=>{
 		axios.get("http://localhost:8080/family")
@@ -390,34 +408,39 @@ function App() {
 	},[update])
 	
 	  return (
-		<Router>
-			<div className="container-fluid">
-				<div className="row">
-					<div className="col-sm-3 text-center pt-5 order-2 order-sm-2 order-md-1">
-						<Link to="/" onClick={()=>{setActive("/")}}><L highlight="/" active={active} name="Family"/></Link>
-						<Link to="/members" onClick={()=>{setActive("/members")}}><L highlight="/members" active={active} name="Members"/></Link>
-						<Link to="/messages" onClick={()=>{setActive("/messages")}}><L highlight="/messages" active={active} name="Notifications"/></Link>
-						<Link to="/map" onClick={()=>{setActive("/map")}}><L highlight="/map" active={active} name="Map"/></Link>
-					</div>
-					<div className="col-sm-9 order-1 order-sm-1 order-md-2">
-						<Switch>
-							<Route path="/map">
-								<Map setActive={setActive} family={family}/>
-							</Route>
-							<Route path="/messages">
-								<Message setActive={setActive} family={family}/>
-							</Route>
-							<Route path="/members">
-								<Member setActive={setActive} family={family} update={update} setUpdate={setUpdate}/>
-							</Route>
-							<Route path="/">
-								<Family setActive={setActive} family={family} update={update} setUpdate={setUpdate}/>
-							</Route>
-						</Switch>
+	  <ThemeProvider theme={darkTheme}>
+			<Router>
+				<MuiBottomNavigation value={value} showLabels className="navibar">
+							<Link to="/" onClick={()=>{setActive("/")}}>
+							<MuiBottomNavigationAction label="Family" value="Family" icon={<MuiGroupAddTwoToneIcon />} /></Link>
+							<Link to="/members" onClick={()=>{setActive("/members")}}><MuiBottomNavigationAction label="Members" value="Members" icon={<FavoriteTwoToneIcon />} /></Link>
+							<Link to="/messages" onClick={()=>{setActive("/messages")}}><MuiBottomNavigationAction label="Notifications" value="Notifications" icon={<AnnouncementTwoToneIcon />} /></Link>
+							<Link to="/map" onClick={()=>{setActive("/map")}}><MuiBottomNavigationAction label="Map" value="Map" icon={<RoomTwoToneIcon />} /></Link>
+							</MuiBottomNavigation>
+		<Container maxWidth="md">
+				<div className="container">
+					<div className="row">
+						<div className="col-12 order-1 order-sm-1 order-md-2">
+							<Switch>
+								<Route path="/map">
+									<Map setActive={setActive} family={family}/>
+								</Route>
+								<Route path="/messages">
+									<Message setActive={setActive} family={family}/>
+								</Route>
+								<Route path="/members">
+									<Member setActive={setActive} family={family} update={update} setUpdate={setUpdate}/>
+								</Route>
+								<Route path="/">
+									<Family setActive={setActive} family={family} update={update} setUpdate={setUpdate}/>
+								</Route>
+							</Switch>
+						</div>
 					</div>
 				</div>
-			</div>
-		</Router>
+			</Container>
+			</Router>
+		</ThemeProvider>
 	  );
 }
 
